@@ -6,7 +6,7 @@ from models.events import Event
 class User(BaseModel):
     email: EmailStr
     password: str
-    events: Optional[List[Event]]  # List of events associated with the user
+    # events: Optional[List[Event]]
 
 
 class Config:
@@ -14,7 +14,7 @@ class Config:
         "example": {
             "email": "user@example.com",
             "password": "strongpassword",
-            "events": [],
+           # "events": [],
         }
     }
 
