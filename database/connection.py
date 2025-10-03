@@ -1,4 +1,4 @@
-from beanie import init_beanie
+from beanie import init_beanie, PydanticObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Any, List, Optional
 from pydantic import BaseSettings, BaseModel
@@ -26,3 +26,13 @@ class Database:
     async def save(self, document) -> None:
         await document.create()
         return
+
+    async def get(self, id: PydanticObjectId) -> Any:
+        doc = await self.model.get(id)
+        if doc:
+            return doc
+        return False
+
+    async def get_all(self) -> List[Any]:
+        docs = await self.model.find_all().to_list()
+        return docs
