@@ -1,7 +1,7 @@
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
-from typing import Optional
-from pydantic import BaseSettings
+from typing import Any, List, Optional
+from pydantic import BaseSettings, BaseModel
 from models.users import User
 from models.events import Event
 
@@ -17,3 +17,12 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+
+
+class Database:
+    def __init__(self, model):
+        self.model = model
+
+    async def save(self, document) -> None:
+        await document.create()
+        return
