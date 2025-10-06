@@ -7,7 +7,6 @@ from models.events import Event
 class User(Document):
     email: EmailStr
     password: str
-    events: Optional[List[Link[Event]]]
 
     class Settings:
         name = "users"
@@ -17,7 +16,6 @@ class User(Document):
             "example": {
                 "email": "fastapi@packt.com",
                 "password": "strong!!!",
-                "events": [],
             }
         }
 
