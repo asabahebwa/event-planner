@@ -1,6 +1,8 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from database.connection import Database
-from models.users import User, UserSignIn
+from fastapi.security import OAuth2PasswordRequestForm
+from auth.jwt_handler import create_access_token
+from models.users import User
 from auth.hash_password import HashPassword
 from database.connection import Database
 
@@ -28,15 +30,17 @@ async def sign_user_up(user: User) -> dict:
 
 
 @user_router.post("/signin")
-async def sign_user_in(user: UserSignIn) -> dict:
+async def sign_user_in(user: OAuth2PasswordRequestForm = Depends()) -> dict:
     user_exist = await User.find_one(User.email == user.email)
     if not user_exist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User with email does not exist.",
         )
-    if user_exist.password == user.password:
-        return {"message": "User signed in successfully."}
+    if hash_password.verify_hash(user.password, user_exist.password):
+        access_token = create_access_token(user_exist.email)
+        return {"access_token": access_token, "token_type": "Bearer"}
+
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid details passed."
     )
