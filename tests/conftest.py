@@ -1,6 +1,6 @@
 import asyncio
-import httpx
 import pytest
+from fastapi.testclient import TestClient
 from main import app
 from database.connection import Settings
 from models.events import Event
@@ -21,10 +21,11 @@ async def init_db():
 
 
 @pytest.fixture(scope="session")
-async def default_client():
-    await init_db()
-    async with httpx.AsyncClient(app=app, base_url="http://app") as client:
+def default_client():
+    # Initialize database synchronously
+    asyncio.run(init_db())
+    
+    # Use TestClient for FastAPI testing
+    with TestClient(app) as client:
         yield client
-        # Clean up resources
-        await Event.find_all().delete()
-        await User.find_all().delete()
+        # Note: Cleanup is handled by using a test database
