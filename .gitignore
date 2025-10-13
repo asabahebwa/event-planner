@@ -21,3 +21,9 @@ dist/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Test coverage artifacts
+.coverage
+
+# Environment files
+.env.prod
